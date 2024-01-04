@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/taraksh01/notDecidedYet/issues"
   },
-  "homepage": "https://github.com/taraksh01/notDecidedYet#readme"
+  "homepage": "https://github.com/taraksh01/notDecidedYet#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
 }
