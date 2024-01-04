@@ -1,0 +1,24 @@
+{
+  "name": "notdecidedyet",
+  "version": "1.0.0",
+  "description": "A video streaming platform.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taraksh01/notDecidedYet.git"
+  },
+  "keywords": [
+    "taraksh01",
+    "video",
+    "stream"
+  ],
+  "author": "Tarak Shaw",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taraksh01/notDecidedYet/issues"
+  },
+  "homepage": "https://github.com/taraksh01/notDecidedYet#readme"
+}
