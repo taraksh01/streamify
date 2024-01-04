@@ -9,4 +9,6 @@ app.use(
   }),
 );
 
+app.use(express.json({ limit: "20kb" }));
+
 export { app };
