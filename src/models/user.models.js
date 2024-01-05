@@ -1,0 +1,39 @@
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    fullName: { type: String, required: true, trim: true },
+    avatar: {
+      type: String,
+      required: [true, "Avatar is required"],
+      trim: true,
+    },
+    coverImage: { type: String, trim: true },
+    watchHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      trim: true,
+    },
+    refreshToken: { type: String, trim: true },
+  },
+
+  { timestamps: true },
+);
+
+export const User = mongoose.model("User", userSchema);
