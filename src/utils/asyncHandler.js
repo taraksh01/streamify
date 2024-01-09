@@ -6,3 +6,12 @@ const asyncHandler = (cb) => async (req, res, next) => {
     next(error);
   }
 };
+
+export { asyncHandler };
+// const notFound = (requestHandler) => {
+//   (req, res, next) => {
+//     Promise.resolve(
+//       requestHandler(req, res, next).catch((error) => next(error)),
+//     );
+//   };
+// };
