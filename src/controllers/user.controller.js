@@ -55,6 +55,10 @@ const registerUser = asyncHandler(async (req, res) => {
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken",
   );
+
+  if (!createdUser) {
+    throw new ApiError(500, "Internal server error");
+  }
 });
 
 export { registerUser };
