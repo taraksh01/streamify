@@ -42,6 +42,19 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  const user = await User.create({
+    username: username.toLowerCase(),
+    fullName,
+    email,
+    password,
+    avatar: avatar.url,
+    coverImage: coverImage.url || "",
+  });
+
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken",
+  );
 });
 
 export { registerUser };
