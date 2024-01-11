@@ -1,6 +1,8 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { User } from "../models/User.js";
+import { User } from "../models/user.models.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   // steps to register a user
@@ -26,11 +28,11 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password must be at least 8 characters long");
   }
 
-  const usernameExist = User.findOne({ username });
+  const usernameExist = await User.findOne({ username });
   if (usernameExist) {
     throw new ApiError(409, "username not available");
   }
-  const emailExist = User.findOne({ email });
+  const emailExist = await User.findOne({ email });
   if (emailExist) {
     throw new ApiError(409, "email already exists");
   }
