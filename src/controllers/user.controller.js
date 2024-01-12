@@ -37,8 +37,9 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "email already exists");
   }
 
-  const avatarLocalPath = req.files?.avatar[0].path;
-  const coverImageLocalPath = req.files?.coverImage[0].path;
+  const avatarLocalPath = req.files?.avatar && req.files?.avatar[0].path;
+  const coverImageLocalPath =
+    req.files?.coverImage && req.files?.coverImage[0].path;
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
