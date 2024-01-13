@@ -181,6 +181,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   if (incommingRefreshToken !== user.refreshToken) {
     throw new ApiError(401, "Refresh token is expired or invalid");
   }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id,
+  );
 });
 
 export { registerUser, loginUser, logoutUser, refreshAccessToken };
