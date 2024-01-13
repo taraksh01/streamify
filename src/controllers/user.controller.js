@@ -138,4 +138,13 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser, loginUser };
+const logoutUser = asyncHandler(async (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    { refreshToken: "" },
+    { $set: { refreshToken: undefined } },
+    { new: true },
+  );
+});
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken };
