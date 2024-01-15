@@ -215,7 +215,7 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 
   user.password = newPassword;
-  user.save({ ValidityState: true });
+  user.save({ ValidityState: false });
 
   return res.status(200).json(new ApiResponse(200, "Password changed", {}));
 });
