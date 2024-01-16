@@ -228,6 +228,22 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User fetched successfully", user));
 });
 
+const updateUserDetails = asyncHandler(async (req, res) => {
+  const { username, fullName, email } = req.body;
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: { username, fullName, email },
+    },
+    { new: true },
+  ).select("-password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User details updated successfully", user));
+});
+
 export {
   registerUser,
   loginUser,
@@ -235,4 +251,5 @@ export {
   refreshAccessToken,
   changePassword,
   getCurrentUser,
+  updateUserDetails,
 };
