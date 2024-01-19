@@ -232,6 +232,16 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateUserDetails = asyncHandler(async (req, res) => {
   const { username, fullName, email } = req.body;
 
+  if (!validateEmail(email)) {
+    throw new ApiError(400, "Email is not valid");
+  }
+  if (username.trim().length < 3) {
+    throw new ApiError(400, "Username must be at least 3 characters long");
+  } else if (username !== req.user.username) {
+    if (await isUsernameAvailable(username)) {
+      throw new ApiError(400, "Username is not available");
+    }
+  }
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
