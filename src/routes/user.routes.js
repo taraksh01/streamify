@@ -31,7 +31,9 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/change-password").post(verifyJWT, changePassword);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
-router.route("update-user-account-details").patch(verifyJWT, updateUserDetails);
+router
+  .route("/update-user-account-details")
+  .patch(verifyJWT, updateUserDetails);
 router
   .route("/update-user-avatar")
   .patch(verifyJWT, upload.single("avatar"), updateAvatar);
