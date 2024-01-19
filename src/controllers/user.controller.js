@@ -34,11 +34,10 @@ const registerUser = asyncHandler(async (req, res) => {
   // send response back to user on frontend
 
   const { username, fullName, email, password } = req.body;
-  const regex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[gmail,protommail,outlook]+(?:\.[a-zA-Z0-9-]+)*$/g;
+
   if (username.trim().length < 3) {
     throw new ApiError(400, "Username must be at least 3 characters long");
-  } else if (!email.match(regex)) {
+  } else if (!validateEmail(email)) {
     throw new ApiError(400, "Email is not valid");
   } else if (fullName.trim().length < 3) {
     throw new ApiError(400, "Full name must be at least 3 characters long");
@@ -46,8 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password must be at least 8 characters long");
   }
 
-  const usernameExist = await User.findOne({ username });
-  if (usernameExist) {
+  if (await isUsernameAvailable(username)) {
     throw new ApiError(409, "username not available");
   }
   const emailExist = await User.findOne({ email });
