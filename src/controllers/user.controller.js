@@ -393,6 +393,13 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Watch history fetched", user[0].watchHistory));
 });
 
+const validateEmail = (email) => {
+  const regex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[gmail,protommail,outlook]+(?:\.[a-zA-Z0-9-]+)*$/g;
+
+  return email.match(regex);
+};
+
 export {
   registerUser,
   loginUser,
