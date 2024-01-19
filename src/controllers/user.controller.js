@@ -400,6 +400,12 @@ const validateEmail = (email) => {
   return email.match(regex);
 };
 
+const isUsernameAvailable = async (username) => {
+  const usernameExist = await User.findOne({ username });
+
+  return usernameExist !== null;
+};
+
 export {
   registerUser,
   loginUser,
@@ -412,4 +418,5 @@ export {
   updateCoverImage,
   getChannelProfile,
   getWatchHistory,
+  isUsernameAvailable,
 };
