@@ -1,8 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { Tweet } from "../models/Tweet";
-import { ApiError } from "../utils/ApiError";
-import { uploadOnCloudinary } from "../utils/cloudinary";
-import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { Tweet } from "../models/tweet.models.js";
+import { ApiError } from "../utils/ApiError.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createTweet = asyncHandler(async (req, res) => {
   const { content } = req.body;
