@@ -27,4 +27,22 @@ const createTweet = asyncHandler(async (req, res) => {
   return res.status(201).json(new ApiResponse(200, "Tweet created", tweet));
 });
 
-export { createTweet };
+const getTweet = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const tweet = await Tweet.findById(id);
+
+    if (!tweet) {
+      console.log("Tweet not found");
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Tweet fetched sucsessfully", tweet));
+  } catch (error) {
+    return res.status(400).json(new ApiError(400, error.message));
+  }
+});
+
+export { createTweet, getTweet };
