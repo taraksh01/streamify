@@ -45,4 +45,25 @@ const getTweet = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTweet, getTweet };
+const updateTweet = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const tweet = await Tweet.findById(id);
+
+  if (String(req.user._id) === String(tweet.author)) {
+    const { content } = req.body;
+    if (content.trim().length === 0) {
+      throw new ApiError(400, "Tweet cannot be empty");
+    }
+    // TODO: handle image or video while updating tweet
+
+    tweet.content = content;
+    await tweet.save();
+
+    return res.status(200).json(new ApiResponse(200, "Tweet updated", tweet));
+  } else {
+    throw new ApiError(400, "Not authorized to edit content");
+  }
+});
+
+export { createTweet, getTweet, updateTweet };
