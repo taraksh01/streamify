@@ -3,6 +3,8 @@ import { Tweet } from "../models/tweet.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User } from "../models/user.models.js";
+import mongoose from "mongoose";
 
 const createTweet = asyncHandler(async (req, res) => {
   const { content } = req.body;
@@ -76,4 +78,24 @@ const deleteTweet = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Tweet deleted successfully", tweet));
 });
 
-export { createTweet, getTweet, updateTweet, deleteTweet };
+const getAllTweets = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is missing");
+  }
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const tweets = await Tweet.find({ author: user._id });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "All tweets fetched successfully", tweets));
+});
+
+export { createTweet, getTweet, updateTweet, deleteTweet, getAllTweets };
