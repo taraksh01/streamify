@@ -414,6 +414,24 @@ const isUsernameAvailable = async (username) => {
   return usernameExist !== null;
 };
 
+const getUser = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is missing");
+  }
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User details fetched successfully", user));
+});
+
 export {
   registerUser,
   loginUser,
@@ -427,4 +445,5 @@ export {
   getChannelProfile,
   getWatchHistory,
   isUsernameAvailable,
+  getUser,
 };
