@@ -66,4 +66,14 @@ const updateTweet = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTweet, getTweet, updateTweet };
+const deleteTweet = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const tweet = await Tweet.findById(id);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Tweet deleted successfully", tweet));
+});
+
+export { createTweet, getTweet, updateTweet, deleteTweet };
