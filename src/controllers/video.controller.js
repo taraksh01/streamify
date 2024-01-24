@@ -1,3 +1,4 @@
+import { User } from "../models/user.models.js";
 import { Video } from "../models/video.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -48,4 +49,24 @@ const getVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Video fetched successfully", video));
 });
 
-export { publishVideo, getVideo };
+const getAllVideos = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is missing");
+  }
+
+  const userId = await User.findOne({ username }).select("_id");
+
+  if (!userId) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const videos = await Video.find({ owner: userId });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Videos fetched successfully", videos));
+});
+
+export { publishVideo, getVideo, getAllVideos };
