@@ -3,7 +3,7 @@ import { Video } from "../models/video.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudinary.js";
 
 const publishVideo = asyncHandler(async (req, res) => {
   const { title, description, isPublished } = req.body;
@@ -100,4 +100,36 @@ const updateVideoDetails = asyncHandler(async (req, res) => {
     );
 });
 
-export { publishVideo, getVideo, getAllVideos, updateVideoDetails };
+const updateThumbnail = asyncHandler(async (req, res) => {
+  const thumbnailLocalPath = req.file.path;
+
+  if (!thumbnailLocalPath) throw new ApiError(400, "Please upload thumbnail");
+
+  const video = await Video.findById(req.params.id);
+
+  if (!video) throw new ApiError(404, "Video not found");
+
+  if (String(req.user?._id) !== String(video?.owner)) {
+    throw new ApiError(400, "You can't update this video");
+  }
+
+  const publicId = video.thumbnail.split("/")[7].split(".")[0];
+
+  const thumbnailCloudinary = await uploadOnCloudinary(thumbnailLocalPath);
+  await deleteOnCloudinary(publicId);
+
+  video.thumbnail = thumbnailCloudinary.url;
+  video.save();
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Thumbnail updated successfully", video));
+});
+
+export {
+  publishVideo,
+  getVideo,
+  getAllVideos,
+  updateVideoDetails,
+  updateThumbnail,
+};
