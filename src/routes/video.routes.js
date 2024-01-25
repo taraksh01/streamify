@@ -20,5 +20,6 @@ router.route("/").post(
 );
 router.route("/:username").get(getAllVideos);
 router.route("/watch/:id").get(getVideo);
+router.route("/update/video-details/:id").patch(updateVideoDetails);
 
 export default router;
