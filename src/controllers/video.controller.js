@@ -69,4 +69,35 @@ const getAllVideos = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Videos fetched successfully", videos));
 });
 
-export { publishVideo, getVideo, getAllVideos };
+const updateVideoDetails = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+
+  if (!video) throw new ApiError(404, "Video not found");
+
+  if (String(req.user?._id) !== String(video?.owner)) {
+    throw new ApiError(400, "You can't update this video");
+  }
+
+  const { title, description } = req.body;
+
+  const updatedVideo = await Video.findByIdAndUpdate(
+    id,
+    { $set: { title, description } },
+    {
+      new: true,
+    },
+  );
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        "Title and description updated successfully",
+        updatedVideo,
+      ),
+    );
+});
+
+export { publishVideo, getVideo, getAllVideos, updateVideoDetails };
