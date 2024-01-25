@@ -4,6 +4,7 @@ import {
   getAllVideos,
   getVideo,
   publishVideo,
+  updateThumbnail,
   updateVideoDetails,
 } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -21,5 +22,8 @@ router.route("/").post(
 router.route("/:username").get(getAllVideos);
 router.route("/watch/:id").get(getVideo);
 router.route("/update/video-details/:id").patch(updateVideoDetails);
+router
+  .route("/update/thumbnail/:id")
+  .patch(upload.single("thumbnail"), updateThumbnail);
 
 export default router;
