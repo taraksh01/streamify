@@ -4,6 +4,7 @@ import {
   getAllVideos,
   getVideo,
   publishVideo,
+  updateVideoDetails,
 } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -18,6 +19,6 @@ router.route("/").post(
   publishVideo,
 );
 router.route("/:username").get(getAllVideos);
-router.route("/:id").get(getVideo);
+router.route("/watch/:id").get(getVideo);
 
 export default router;
