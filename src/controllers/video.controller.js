@@ -146,6 +146,21 @@ const deleteVideo = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, "Video deleted successfully"));
 });
 
+const togglePublish = asyncHandler(async (req, res) => {
+  const video = await Video.findById(req.params?.id);
+
+  if (!video) throw new ApiError(404, "Video not found");
+
+  if (String(req.user?._id) !== String(video?.owner)) {
+    throw new ApiError(400, "You can't update this video");
+  }
+
+  video.isPublished = !video.isPublished;
+  video.save();
+
+  res.status(200).json(new ApiResponse(200, "Video status updated", video));
+});
+
 export {
   publishVideo,
   getVideo,
@@ -153,4 +168,5 @@ export {
   updateVideoDetails,
   updateThumbnail,
   deleteVideo,
+  togglePublish,
 };
