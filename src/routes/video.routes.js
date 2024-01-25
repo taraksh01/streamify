@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
+  deleteVideo,
   getAllVideos,
   getVideo,
   publishVideo,
@@ -25,5 +26,6 @@ router.route("/update/video-details/:id").patch(updateVideoDetails);
 router
   .route("/update/thumbnail/:id")
   .patch(upload.single("thumbnail"), updateThumbnail);
+router.route("/update/:id").delete(deleteVideo);
 
 export default router;
