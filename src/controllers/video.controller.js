@@ -126,10 +126,31 @@ const updateThumbnail = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Thumbnail updated successfully", video));
 });
 
+const deleteVideo = asyncHandler(async (req, res) => {
+  const video = await Video.findById(req.params?.id);
+
+  if (!video) throw new ApiError(404, "Video not found");
+
+  if (String(req.user?._id) !== String(video?.owner)) {
+    throw new ApiError(400, "You can't delete this video");
+  }
+
+  const videoPublicId = video.video.split("/")[7].split(".")[0];
+  const thumbnailPublicId = video.thumbnail.split("/")[7].split(".")[0];
+
+  await deleteOnCloudinary(videoPublicId, "video");
+  await deleteOnCloudinary(thumbnailPublicId);
+
+  await Video.findByIdAndDelete(req.params.id);
+
+  res.status(200).json(new ApiResponse(200, "Video deleted successfully"));
+});
+
 export {
   publishVideo,
   getVideo,
   getAllVideos,
   updateVideoDetails,
   updateThumbnail,
+  deleteVideo,
 };
