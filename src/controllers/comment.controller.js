@@ -125,10 +125,31 @@ const getComment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Comment fetched successfully", comment));
 });
 
+const updateComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.id);
+
+  if (!comment) throw new ApiError(404, "Comment not found");
+
+  if (comment.author.toString() !== req.user._id.toString())
+    throw new ApiError(403, "You are not authorized to update this comment");
+
+  const { content } = req.body;
+
+  if (!content) throw new ApiError(400, "Comment is required");
+
+  comment.content = content;
+  comment.save();
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Comment updated successfully", comment));
+});
+
 export {
   createVideoComment,
   createTweetComment,
   getAllCommentsOnVideo,
   getAllCommentsOnTweet,
   getComment,
+  updateComment,
 };
