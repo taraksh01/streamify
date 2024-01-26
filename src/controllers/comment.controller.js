@@ -49,4 +49,37 @@ const createTweetComment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Comment created successfully", comment));
 });
 
-export { createVideoComment, createTweetComment };
+const getAllCommentsOnVideo = asyncHandler(async (req, res) => {
+  const video = await Video.findById(req.params.id);
+
+  if (!video) throw new ApiError(404, "Video not found");
+
+  const comments = await Comment.aggregate([
+    { $match: { video: video._id } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "author",
+      },
+    },
+    {
+      $project: {
+        username: { $arrayElemAt: ["$author.username", 0] },
+        fullName: { $arrayElemAt: ["$author.fullName", 0] },
+        profilePicture: { $arrayElemAt: ["$author.avatar", 0] },
+        video: 1,
+        content: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Comments fetched successfully", comments));
+});
+
+export { createVideoComment, createTweetComment, getAllCommentsOnVideo };
