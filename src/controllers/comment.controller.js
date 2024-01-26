@@ -145,6 +145,21 @@ const updateComment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Comment updated successfully", comment));
 });
 
+const deleteComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.id);
+
+  if (!comment) throw new ApiError(404, "Comment not found");
+
+  if (comment.author.toString() !== req.user._id.toString())
+    throw new ApiError(403, "You are not authorized to delete this comment");
+
+  await comment.deleteOne({
+    _id: req.params.id,
+  });
+
+  res.status(200).json(new ApiResponse(200, "Comment deleted successfully"));
+});
+
 export {
   createVideoComment,
   createTweetComment,
@@ -152,4 +167,5 @@ export {
   getAllCommentsOnTweet,
   getComment,
   updateComment,
+  deleteComment,
 };
