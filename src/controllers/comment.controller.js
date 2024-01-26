@@ -115,9 +115,20 @@ const getAllCommentsOnTweet = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Comments fetched successfully", comments));
 });
 
+const getComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.id);
+
+  if (!comment) throw new ApiError(404, "Comment not found");
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Comment fetched successfully", comment));
+});
+
 export {
   createVideoComment,
   createTweetComment,
   getAllCommentsOnVideo,
   getAllCommentsOnTweet,
+  getComment,
 };
