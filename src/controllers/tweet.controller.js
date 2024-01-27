@@ -32,19 +32,15 @@ const createTweet = asyncHandler(async (req, res) => {
 const getTweet = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const tweet = await Tweet.findById(id);
+  const tweet = await Tweet.findById(id);
 
-    if (!tweet) {
-      console.log("Tweet not found");
-    }
-
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "Tweet fetched sucsessfully", tweet));
-  } catch (error) {
-    return res.status(400).json(new ApiError(400, error.message));
+  if (!tweet) {
+    throw new ApiError(404, "Tweet not found");
   }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Tweet fetched sucsessfully", tweet));
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
@@ -77,8 +73,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Not authorized to delete tweet");
   }
 
-  const deleted = await tweet.deleteOne({ _id: id });
-  console.log(deleted);
+  await tweet.deleteOne({ _id: id });
 
   return res
     .status(200)
