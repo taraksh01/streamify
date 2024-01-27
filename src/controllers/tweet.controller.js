@@ -73,9 +73,16 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
   const tweet = await Tweet.findById(id);
 
+  if (String(req.user._id) !== String(tweet.author)) {
+    throw new ApiError(400, "Not authorized to delete tweet");
+  }
+
+  const deleted = await tweet.deleteOne({ _id: id });
+  console.log(deleted);
+
   return res
     .status(200)
-    .json(new ApiResponse(200, "Tweet deleted successfully", tweet));
+    .json(new ApiResponse(200, "Tweet deleted successfully"));
 });
 
 const getAllTweets = asyncHandler(async (req, res) => {
