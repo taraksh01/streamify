@@ -13,7 +13,7 @@ const router = Router();
 
 router.route("/:username").get(verifyJWT, getAllTweets);
 router.route("/create").post(verifyJWT, upload.single("image"), createTweet);
-router.route("/:id").get(getTweet);
+router.route("/get/:id").get(getTweet);
 router.route("/update/:id").patch(verifyJWT, updateTweet);
 router.route("/delete/:id").delete(verifyJWT, deleteTweet);
 
