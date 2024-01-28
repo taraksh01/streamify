@@ -33,4 +33,35 @@ const getSubscribedChannelList = asyncHandler(async (req, res) => {
     );
 });
 
-export { getSubscribedChannelList };
+const getSubscribersList = asyncHandler(async (req, res) => {
+  const subscriberList = await User.aggregate([
+    { $match: { _id: req.params.id } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "subscribedTo",
+        foreignField: "_id",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $project: {
+        fullName: { $arrayElemAt: ["$subscribedTo.fullName", 0] },
+        username: { $arrayElemAt: ["$subscribedTo.username", 0] },
+        profilePicture: { $arrayElemAt: ["$subscribedTo.avatar", 0] },
+      },
+    },
+  ]);
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        "Subscribers list fetched successfully",
+        subscriberList,
+      ),
+    );
+});
+
+export { getSubscribedChannelList, getSubscribersList };
