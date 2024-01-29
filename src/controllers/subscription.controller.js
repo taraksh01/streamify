@@ -85,4 +85,35 @@ const getSubscribersList = asyncHandler(async (req, res) => {
   }
 });
 
-export { getSubscribedChannelList, getSubscribersList };
+const toggleSubscribe = asyncHandler(async (req, res) => {
+  const { subscribedTo } = req.body;
+
+  const user = await User.findById(subscribedTo);
+
+  if (!user) {
+    throw new ApiError("Channel not found");
+  }
+
+  const isSubscribed = await Subscription.find({
+    subscriber: req.user.id,
+    subscribedTo,
+  });
+
+  if (isSubscribed.length === 0) {
+    await Subscription.create({
+      subscriber: req.user.id,
+      subscribedTo,
+    });
+  } else {
+    await Subscription.deleteOne({
+      subscribedTo,
+      subscriber: req.user.id,
+    });
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Subscription updated successfully"));
+});
+
+export { getSubscribedChannelList, getSubscribersList, toggleSubscribe };
