@@ -47,34 +47,42 @@ const getSubscribedChannelList = asyncHandler(async (req, res) => {
 });
 
 const getSubscribersList = asyncHandler(async (req, res) => {
-  const subscriberList = await User.aggregate([
-    { $match: { _id: req.params.id } },
-    {
-      $lookup: {
-        from: "users",
-        localField: "subscribedTo",
-        foreignField: "_id",
-        as: "subscribedTo",
+  try {
+    const subscriberList = await Subscription.aggregate([
+      { $match: { subscribedTo: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "subscriber",
+          foreignField: "_id",
+          as: "subscriber",
+          pipeline: [{ $project: { fullName: 1, username: 1, avatar: 1 } }],
+        },
       },
-    },
-    {
-      $project: {
-        fullName: { $arrayElemAt: ["$subscribedTo.fullName", 0] },
-        username: { $arrayElemAt: ["$subscribedTo.username", 0] },
-        profilePicture: { $arrayElemAt: ["$subscribedTo.avatar", 0] },
+      {
+        $addFields: {
+          subscriber: { $first: "$subscriber" },
+        },
       },
-    },
-  ]);
+      {
+        $project: {
+          subscriber: 1,
+        },
+      },
+    ]);
 
-  res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        "Subscribers list fetched successfully",
-        subscriberList,
-      ),
-    );
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Subscribers list fetched successfully",
+          subscriberList,
+        ),
+      );
+  } catch (error) {
+    throw new ApiError(500, error.message);
+  }
 });
 
 export { getSubscribedChannelList, getSubscribersList };
