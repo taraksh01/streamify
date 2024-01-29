@@ -2,12 +2,15 @@ import mongoose from "mongoose";
 
 const subscriptionModel = new mongoose.Schema(
   {
-    subscriber: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    subscribedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    status: {
-      type: String,
-      default: "pending",
-      enum: ["pending", "approved", "rejected", "banned", "suspended"],
+    subscriber: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    subscribedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   { timestamps: true },
