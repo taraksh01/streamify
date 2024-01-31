@@ -29,4 +29,35 @@ const cteatePlaylist = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Playlist created successfully", playlist));
 });
 
-export { cteatePlaylist };
+const updatePlaylist = asyncHandler(async (req, res) => {
+  const { name, description } = req.body;
+  const { playlistId } = req.params;
+
+  if (!playlistId) {
+    throw new ApiError(400, "Please provide playlist id");
+  }
+
+  const playlist = await Playlist.findOne({ _id: playlistId });
+
+  if (!playlist) {
+    throw new ApiError(404, "Playlist not found");
+  }
+
+  if (playlist.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You are not authorized to update this playlist");
+  }
+
+  const updatedPlaylist = await Playlist.findByIdAndUpdate({
+    _id: playlistId,
+    name,
+    description,
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Playlist updated successfully", updatedPlaylist),
+    );
+});
+
+export { cteatePlaylist, updatePlaylist };
