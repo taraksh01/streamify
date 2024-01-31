@@ -78,4 +78,28 @@ const getPlaylist = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Playlist fetched successfully", playlist));
 });
 
-export { cteatePlaylist, updatePlaylist, getPlaylist };
+const deletePlaylist = asyncHandler(async (req, res) => {
+  const { playlistId } = req.params;
+
+  if (!playlistId) {
+    throw new ApiError(400, "Please provide playlist id");
+  }
+
+  const playlist = await Playlist.findOne({ _id: playlistId });
+
+  if (!playlist) {
+    throw new ApiError(404, "Playlist not found");
+  }
+
+  if (playlist.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You are not authorized to delete this playlist");
+  }
+
+  await Playlist.findByIdAndDelete({ _id: playlistId });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Playlist deleted successfully"));
+});
+
+export { cteatePlaylist, updatePlaylist, getPlaylist, deletePlaylist };
