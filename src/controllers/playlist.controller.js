@@ -174,6 +174,14 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     );
 });
 
+const getUserPlaylist = asyncHandler(async (req, res) => {
+  const playlists = await Playlist.find({ owner: req.params.userId });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Playlists fetched successfully", playlists));
+});
+
 export {
   cteatePlaylist,
   updatePlaylist,
@@ -181,4 +189,5 @@ export {
   deletePlaylist,
   addVideoToPlaylist,
   removeVideoFromPlaylist,
+  getUserPlaylist,
 };
