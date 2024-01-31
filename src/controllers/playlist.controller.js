@@ -140,10 +140,45 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     );
 });
 
+const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
+  const { playlistId, videoId } = req.params;
+
+  if (!playlistId || !videoId) {
+    throw new ApiError(400, "Please provide playlist id and video id");
+  }
+
+  const playlist = await Playlist.findOne({ _id: playlistId });
+
+  if (!playlist) {
+    throw new ApiError(404, "Playlist not found");
+  }
+
+  if (playlist.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "You are not authorized to update this playlist");
+  }
+
+  playlist.videos = playlist.videos.filter(
+    (v) => v.toString() !== videoId.toString(),
+  );
+
+  const updatedPlaylist = await playlist.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        "Video removed from playlist successfully",
+        updatedPlaylist,
+      ),
+    );
+});
+
 export {
   cteatePlaylist,
   updatePlaylist,
   getPlaylist,
   deletePlaylist,
   addVideoToPlaylist,
+  removeVideoFromPlaylist,
 };
