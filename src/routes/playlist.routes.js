@@ -5,6 +5,7 @@ import {
   cteatePlaylist,
   deletePlaylist,
   getPlaylist,
+  getUserPlaylist,
   removeVideoFromPlaylist,
   updatePlaylist,
 } from "../controllers/playlist.controller.js";
@@ -20,5 +21,6 @@ router
   .delete(deletePlaylist);
 router.route("/add/:playlistId/:videoId").patch(addVideoToPlaylist);
 router.route("/remove/:playlistId/:videoId").patch(removeVideoFromPlaylist);
+router.route("/user/:userId").get(getUserPlaylist);
 
 export default router;
