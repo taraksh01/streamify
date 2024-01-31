@@ -126,10 +126,8 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Video not found");
   }
 
-  const updatedPlaylist = await Playlist.findByIdAndUpdate({
-    _id: playlistId,
-    videos: [...new Set([...playlist.videos, videoId])],
-  });
+  !playlist.videos.includes(videoId) && playlist.videos.push(videoId);
+  const updatedPlaylist = await playlist.save();
 
   return res
     .status(200)
