@@ -60,4 +60,22 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     );
 });
 
-export { cteatePlaylist, updatePlaylist };
+const getPlaylist = asyncHandler(async (req, res) => {
+  const { playlistId } = req.params;
+
+  if (!playlistId) {
+    throw new ApiError(400, "Please provide playlist id");
+  }
+
+  const playlist = await Playlist.findOne({ _id: playlistId });
+
+  if (!playlist) {
+    throw new ApiError(404, "Playlist not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Playlist fetched successfully", playlist));
+});
+
+export { cteatePlaylist, updatePlaylist, getPlaylist };
