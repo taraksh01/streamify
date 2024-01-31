@@ -7,7 +7,7 @@ const playlistSchema = new mongoose.Schema(
     videos: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Video", required: true },
     ],
-    author: {
+    owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
