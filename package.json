@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+    "dev": "node src/index.js",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,6 @@
   },
   "homepage": "https://github.com/taraksh01/notDecidedYet#readme",
   "devDependencies": {
-    "nodemon": "^3.0.2",
     "prettier": "^3.1.1"
   },
   "dependencies": {
